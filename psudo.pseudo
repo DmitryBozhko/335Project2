@@ -1,0 +1,120 @@
+struct TimeInterval
+    int start
+    int end
+
+timeToMinutes(time)
+    int hours = string to int from time
+    int minutes = string to int from time
+    return hours * 60 + minutes
+
+minutesToTime(minutes)
+    int hours = minutes / 60
+    int minutes %= 60
+    return time as string
+
+mergeIntervals(intervals)
+    if intervals is empty:
+        return empty
+    sort intervals in chronological order
+    
+    vector<TimeInterval> merged
+    push first value from intervals into vector merged
+    for int i from 1 to the number of intervals:
+        if the back end of merged >= front end of interval:
+            merged back end = max between merged back end and interval back end
+            and push them into merged
+        else:
+            push interval into merged and move to check next interval
+    return merged
+
+findAvailableSlots(activePeriod, busyIntervals, minDuration)
+    vector<TimeInterval> available
+    int currentStart = activePeriod.start
+    for busyIntervals:
+        if busy.start > currentStart:
+            int freeEnd = minimum between activePeriod.end and busy.start
+            If (freeEnd - currentStart >= minDuration):
+                push currentStart and freeEnd into vector 'available'
+        currentStart = maximum between currentStart and busy.end
+    if activePeriod.end = currentStart >= minDuration:
+        push currentStart and activePeriod.end into vector 'available'
+    return available
+
+findCommonIntervals(allAvailableSlots, minDuration)
+    vector<TimeInterval> commonIntervals = allAvailableSlots[0]
+    for i from zero to size of allAvailableSlots:
+        vector<TimeInterval> temp
+        for commonIntervals:
+            for allAvailiableSlots:
+                int start = maximum between common.start and slot.start
+                int end = minimum between common.end and slot.end
+                if (end - start >= minDuration):
+                    push start and end into temp
+        commonIntervals = temp
+    return commonIntervals
+
+createSampleInputFile()
+    ofstream sampleInput(input.txt)
+    add sample number of group members
+    add sample minimum duration for meeting in minutes
+    add sample active period for member 1
+    add sample busy intervals for member 1
+    add sample active period for member 2
+    add sample busy intervals for member 2
+    close sampleInput file
+    print message that sampleInput file has been created
+
+main()
+    ifstream inputFile(input)
+    ofstream outputFile(output)
+    
+    if no inputFile is open:
+        createSampleInputFile
+        return 1
+    
+    if no outputFile is open:
+        print error message
+        return 1
+    
+    int numMembers
+    int minDuration
+    get numMembers from inputFile
+    get minDuration from inputFile
+    ignore newline in inputFile
+    
+    vector<vector<TimeInterval>> allAvailableSlots;
+    vector<TimeInterval> activePeriods(numMembers);
+    
+    for i from zero to numMembers:
+        string login
+        string logout
+        get login and logout from inputFile
+        activePeriods[i] = {timeToMinutes(login), timeToMinutes(logout)};
+        ignore newline in inputFile
+        
+        string busyIntervalsLine
+        get busyIntervalsLine from inputFile
+        vector<TimeInterval> busyIntervals
+        stringstream ss(busyIntervalsLine)
+        string interval
+        
+        while there are still lines to get from inputFile:
+            stringstream intervalStream(interval)
+            string start, end
+            get start and end from intervalStream
+            push timeToMinutes(start) and timeToMinutes(end) into busyIntervals
+        
+        busyIntervals = mergeIntervals(busyIntervals)
+        vector<TimeInterval> availableSlots = findAvailableSlots(activePeriods[i], busyIntervals, minDuration)
+        push availableSlots into allAvailableSlots
+    
+    vector<TimeInterval> commonFreeSlots = findCommonIntervals(allAvailableSlots, minDuration)
+    
+    print header for results to outputFile
+    for all commonFreeSlots:
+        print minutesToTime(interval.start) and minutesToTime(interval.end) to outputFile
+    
+    close inputFile
+    close outputFile
+    print message that results have been printed to file
+    return 0
